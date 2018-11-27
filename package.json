@@ -2,6 +2,7 @@
   "name": "personal",
   "version": "0.1.0",
   "private": true,
+  "homepage" : "https://maneet08.github.io/Personal/" ,
   "dependencies": {
     "@material-ui/core": "^3.5.1",
     "axios": "^0.18.0",
@@ -12,7 +13,7 @@
     "react-scripts": "2.0.5"
   },
   "scripts": {
-    "start": "set PORT=3006 && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
