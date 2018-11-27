@@ -1,9 +1,9 @@
 import React, { Component } from "react";
+import axios from "axios";
+
 import {
   Tabs,
   Tab,
-  Grid,
-  Cell,
   Card,
   CardTitle,
   CardActions,
@@ -17,124 +17,87 @@ class projects extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: 0
+      activeTab: 0,
+      projects: []
     };
+  }
+  componentDidMount() {
+    axios.get("http://192.168.0.112:3000/api/Projects").then(res => {
+      this.setState({ projects: res.data });
+    });
   }
 
   toggleCategories() {
-    if (this.state.activeTab === 0) {
-      return (
-        <div className="projects-grid">
-          <Card shadow={5} style={{ minwidth: "450", margin: "auto" }}>
-            <CardTitle
-              style={{
-                color: "#000",
-                height: "176px",
-                background:
-                  "url(https://image.flaticon.com/icons/svg/174/174881.svg) center / cover"
-              }}
-            >
-              Wordpress Project #1
-            </CardTitle>
-            <CardText>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s
-            </CardText>
-            <CardActions border>
-              <button colored>Github</button>
-              <button colored>Codepen</button>
-              <button colored>Live Demo</button>
-            </CardActions>
-            <CardMenu style={{ color: "#fff" }}>
-              <IconButton name="share" />
-            </CardMenu>
-          </Card>
-          <Card shadow={5} style={{ minwidth: "450", margin: "auto" }}>
-            <CardTitle
-              style={{
-                color: "#000",
-                height: "176px",
-                background:
-                  "url(https://image.flaticon.com/icons/svg/174/174881.svg) center / cover"
-              }}
-            >
-              Wordpress Project #2
-            </CardTitle>
-            <CardText>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s
-            </CardText>
-            <CardActions border>
-              <button colored>Github</button>
-              <button colored>Codepen</button>
-              <button colored>Live Demo</button>
-            </CardActions>
-            <CardMenu style={{ color: "#fff" }}>
-              <IconButton name="share" />
-            </CardMenu>
-          </Card>
-          <Card shadow={5} style={{ minwidth: "450", margin: "auto" }}>
-            <CardTitle
-              style={{
-                color: "#000",
-                height: "176px",
-                background:
-                  "url(https://image.flaticon.com/icons/svg/174/174881.svg) center / cover"
-              }}
-            >
-              Wordpress Project #3
-            </CardTitle>
-            <CardText>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s
-            </CardText>
-            <CardActions border>
-              <button colored>Github</button>
-              <button colored>Codepen</button>
-              <button colored>Live Demo</button>
-            </CardActions>
-            <CardMenu style={{ color: "#fff" }}>
-              <IconButton name="share" />
-            </CardMenu>
-          </Card>
-        </div>
-      );
-    } else if (this.state.activeTab === 1) {
-      return (
-        <div>
-          <h1>PHP</h1>
-        </div>
-      );
-    } else if (this.state.activeTab === 2) {
-      return (
-        <div>
-          <h1>React</h1>
-        </div>
-      );
+    let cat = "";
+
+    switch (this.state.activeTab) {
+      case 0:
+        cat = "Wordpress";
+        break;
+
+      case 1:
+        cat = "PHP";
+        break;
+
+      case 2:
+        cat = "React JS";
+        break;
     }
+
+    return this.state.projects
+      .filter(p => p.category == cat)
+      .map(project => (
+        <Card shadow={5} className="col-md-3 mt-2" style={{ margin: "auto" }}>
+          <CardTitle
+            style={{
+              color: "#000",
+              height: "176px",
+              background:
+                "url(https://image.flaticon.com/icons/svg/174/174881.svg) center / cover"
+            }}
+          >
+            {project.name}
+          </CardTitle>
+          <CardText>{project.description}</CardText>
+          <CardActions border>
+            <button colored>
+              <a href={"https://" + project.link}>Live Demo</a>
+            </button>
+          </CardActions>
+          <CardMenu style={{ color: "#fff" }} />
+        </Card>
+      ));
   }
 
   render() {
+    setInterval(this.componentDidMount(), 500);
     return (
       <div className="category-tabs">
         <Tabs
           activeTab={this.state.activeTab}
-          onChange={tabId => this.setState({ activeTab: tabId })}
+          onChange={tab => this.setState({ activeTab: tab })}
           ripple
         >
           <Tab>Wordpress</Tab>
           <Tab>PHP</Tab>
-          <Tab>React</Tab>
+          <Tab>React JS</Tab>
+          <Tab>React Native</Tab>
+          <Tab>Node JS</Tab>
         </Tabs>
 
-        <Grid>
-          <Cell col={12}>
-            <div className="content">{this.toggleCategories()}</div>
-          </Cell>
-        </Grid>
+        <select
+          activeTab={this.state.activeTab}
+          onChange={tab => this.setState({ activeTab: tab })}
+          ripple
+        >
+          <option>Wordpress</option>
+          <option>PHP</option>
+          <option>React</option>
+          <option>React Native</option>
+          <option>Node JS</option>
+        </select>
+
+        <div className="flex-container">{this.toggleCategories()}</div>
       </div>
     );
   }
